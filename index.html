@@ -38,7 +38,17 @@
             padding: 1rem 0;
         }
         
-        .logo {
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-img {
+            height: 50px;
+            margin-right: 15px;
+        }
+        
+        .logo-text {
             font-size: 1.8rem;
             font-weight: bold;
         }
@@ -194,7 +204,10 @@
     <header>
         <div class="container">
             <nav>
-                <div class="logo">SEDRONE</div>
+                <div class="logo-container">
+                    <img src="https://via.placeholder.com/50x50?text=SEDRONE" alt="Sedrone Logo" class="logo-img">
+                    <div class="logo-text">SEDRONE</div>
+                </div>
                 <ul class="nav-links">
                     <li><a href="#home">Home</a></li>
                     <li><a href="#services">Services</a></li>
@@ -306,7 +319,7 @@
         <div class="container">
             <p>&copy; 2023 Sedrone IT Solutions. All Rights Reserved.</p>
             <p>CEO:  Emmanuel Umunnakwe</p>
-        </di
+        </div>
     </footer>
 </body>
 </html>
