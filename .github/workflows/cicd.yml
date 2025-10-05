@@ -1,4 +1,4 @@
-# A workflow to build and p[ush a Docker image to Amazon ECR
+# A workflow to build and push a Docker image to Amazon ECR
 name: Build and push image to ECR
 
 on:
@@ -6,28 +6,26 @@ on:
   push:
     branches: ["main"]
 
-  
 jobs:
   build-push:
     runs-on: ubuntu-latest
     steps:
-        - name: checkout code
-          uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-        # Configure AWS credentials
+      # Configure AWS credentials
+      - name: Configure AWS CLI
+        run: |
+          aws configure set aws-access-key-id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws-secret-access-key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region ${{ secrets.AWS_REGION }}
 
-        - name: Configure AWS CLI
-          run: |
-            aws configure set aws-access-key-id ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws configure set aws-secret-access-key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws configure set default.region ${{ secrets.AWS_REGION }}
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-        - name: Login to Amazon ECR
-          run: |
-           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-
-        - name: Build and push Docker image
-          run: |
-           docker build -t nedrone .
-           docker tag nedrone:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/nedrone:latest
-           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/nedrone:latest
+      - name: Build and push Docker image
+        run: |
+          docker build -t nedrone .
+          docker tag nedrone:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/nedrone:latest
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/nedrone:latest
