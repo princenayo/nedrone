@@ -26,15 +26,15 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t nedrone:v4 .
+          docker build -t nedrone:v5 .
 
       - name: Tag Docker image
         run: |
-          docker tag nedrone:v4 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v4
+          docker tag nedrone:v5 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v5
 
       - name: Push Docker image
         run: |
-          docker push 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v4
+          docker push 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v5
 
   deploy:
     runs-on: ubuntu-latest 
@@ -50,13 +50,17 @@ jobs:
 
          # ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@44.221.67.195 "hostnamectl"
 
-      - name: Install AWS CLI
+     # - name: Install AWS CLI
+     #   run: |
+      #    ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@34.231.243.228 "sudo snap install aws-cli --classic"
+
+
+      - name: Login to Amazon ECR
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@34.231.243.228 "sudo snap install aws-cli --classic"
-
-
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 514246414247.dkr.ecr.us-east-1.amazonaws.com
+        
       - name: Deploy to EC2 instance
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@34.231.243.228 "docker pull 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v4"
-
-          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@34.231.243.228 "docker run -d -p80:80 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v4"
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@34.231.243.228 "docker pull 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v5"
+          
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@34.231.243.228 "docker run -d -p80:80 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v5
