@@ -20,13 +20,18 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 514246414247.dkr.ecr.us-east-1.amazonaws.com
+
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/nedrone:v1 .
+          docker build -t nedrone:v2 .
+
+      - name: Tag Docker image
+        run: |
+          docker tag nedrone:v2 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v2
 
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/nedrone:v1
+          docker push 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v2
