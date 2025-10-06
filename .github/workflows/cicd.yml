@@ -26,12 +26,23 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t nedrone:v2 .
+          docker build -t nedrone:v3 .
 
       - name: Tag Docker image
         run: |
-          docker tag nedrone:v2 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v2
+          docker tag nedrone:v3 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v3
 
       - name: Push Docker image
         run: |
-          docker push 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v2
+          docker push 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v3
+
+  deploy:
+    runs-on: ubuntu-latest 
+    needs: build-push
+    steps:
+      - name: Check my ssh-key
+        run: |
+          echo "${{ secrets.SSH_KEY }}" > ssh-key.pem
+          chmod 600 ssh-key.pem
+          cat ssh-key.pem
+        
