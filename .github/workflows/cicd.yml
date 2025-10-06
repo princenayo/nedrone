@@ -26,15 +26,15 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t nedrone:v3 .
+          docker build -t nedrone:v4 .
 
       - name: Tag Docker image
         run: |
-          docker tag nedrone:v3 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v3
+          docker tag nedrone:v4 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v4
 
       - name: Push Docker image
         run: |
-          docker push 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v3
+          docker push 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v4
 
   deploy:
     runs-on: ubuntu-latest 
@@ -46,6 +46,25 @@ jobs:
           chmod 600 ssh-key.pem
           cat ssh-key.pem
 
-          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@44.221.67.195 "docker ps"
+          
 
-           ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@44.221.67.195 "hostnamectl"
+         # ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@44.221.67.195 "hostnamectl"
+
+      - name: Install AWS CLI
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to EC2 instance
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@34.231.243.228 "docker pull 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v4"
+
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@34.231.243.228 "docker run -d -p80:80 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v4"
