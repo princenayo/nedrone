@@ -26,15 +26,15 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t nedrone:v1 .
+          docker build -t nedrone:latest .
 
       - name: Tag Docker image
         run: |
-          docker tag nedrone:v1 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v1
+          docker tag nedrone:latest 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:latest
 
       - name: Push Docker image
         run: |
-          docker push 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v1
+          docker push 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:latest
 
   deploy:
     runs-on: ubuntu-latest 
@@ -48,10 +48,12 @@ jobs:
 
           
 
-         # ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@44.221.67.195 "hostnamectl"
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@13.220.111.3 "hostnamectl"
 
       - name: Deploy to EC2 instance
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@13.220.111.3 "docker pull 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v1"
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@13.220.111.3 "docker pull 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:latest"
           
-          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@13.220.111.3 "docker run -d -p80:80 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:v1
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@13.220.111.3 "docker rm -r nedrone"
+        
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ubuntu@13.220.111.3 "docker run -d -p80:80 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:latest
