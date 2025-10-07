@@ -56,4 +56,4 @@ jobs:
           
           ssh -o StrictHostKeyChecking=no -i ssh-key.pem ${{ secrets.EC2_USERNAME_HOST }} "docker rm -f nedrone"
         
-          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ${{ secrets.EC2_USERNAME_HOST }} "docker run -d -p80:80 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:${{ github.run_number }}"
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ${{ secrets.EC2_USERNAME_HOST }} "docker run -d -p8000:80 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:${{ github.run_number }}"
