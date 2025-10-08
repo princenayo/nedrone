@@ -34,7 +34,7 @@ jobs:
 
       - name: Push Docker image
         run: |
-          docker push 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:latest }}
+          docker push 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:latest
 
   deploy:
     runs-on: ubuntu-latest 
@@ -54,6 +54,6 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i ssh-key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "docker pull 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:latest"
           
-          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "docker rm -f 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:latest || true"
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "docker rm -f nedrone || true"
         
-          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "docker run -d -p80:80 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:latest"
+          ssh -o StrictHostKeyChecking=no -i ssh-key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "docker run -d -p80:80 --name nedrone 514246414247.dkr.ecr.us-east-1.amazonaws.com/nedrone:latest"
