@@ -1,3 +1,4 @@
+
 This project aims to automate the build and push of a Docker image to AWS ECR, and deploy the container to AWS EC2, utilising a CI/CD Git Action workflow. 
 One of the requirements is to set up a reverse proxy (HAProxy ) with SSL (Let’s Encrypt) and connect it to a domain.
 
@@ -8,4 +9,4 @@ Prerequisites on AWS
 3. Docker on EC2: Docker must be installed and running on the target EC2 instance.
 4. Security Group: The EC2 instance's security group must allow inbound traffic on port 22 (SSH) from the GitHub Actions runner's IP ranges, and port 443 (HTTPS) from your intended users (e.g., 0.0.0.0/0).
 
-
+![workflow diagram](image.png)
